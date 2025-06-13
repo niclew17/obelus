@@ -1,8 +1,8 @@
-import Footer from "@/components/footer";
-import Hero from "@/components/hero";
-import Navbar from "@/components/navbar";
-import { MessageCircle, Search, Star, Users, Shield, Zap } from "lucide-react";
+import { redirect } from "next/navigation";
 import { createClient } from "../../supabase/server";
+import DashboardNavbar from "@/components/dashboard-navbar";
+import { MessageCircle, Search, History, User } from "lucide-react";
+import Link from "next/link";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -10,119 +10,111 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      <Navbar />
-      <Hero />
+  // If user is not authenticated, show the dashboard but redirect to sign-in on button clicks
+  if (!user) {
+    return (
+      <>
+        <DashboardNavbar />
+        <main className="w-full min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+          <div className="container mx-auto px-4 py-8">
+            {/* Welcome Header */}
+            <header className="text-center mb-12">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                Welcome to <span className="text-purple-600">Obelus</span>
+              </h1>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                What would you like to do today? Share your experiences or
+                discover new products.
+              </p>
+            </header>
 
-      {/* Features Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">How Obelus Works</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Experience the future of product reviews through intelligent
-              conversations.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <MessageCircle className="w-6 h-6" />,
-                title: "Tell Your Story",
-                description:
-                  "Share your product experiences through natural conversation",
-              },
-              {
-                icon: <Search className="w-6 h-6" />,
-                title: "Learn & Discover",
-                description:
-                  "Get personalized product insights and recommendations",
-              },
-              {
-                icon: <Star className="w-6 h-6" />,
-                title: "Smart Reviews",
-                description:
-                  "AI-powered analysis of authentic user experiences",
-              },
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="text-purple-600 mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+            {/* Main Action Cards */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
+              {/* Tell Card */}
+              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-100">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <MessageCircle className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    Tell
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Share your product experiences through natural conversation.
+                    Help others make better decisions.
+                  </p>
+                  <Link
+                    href="/sign-in?redirect=/dashboard"
+                    className="block w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors font-medium text-center"
+                  >
+                    Start Sharing
+                  </Link>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Benefits Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Why Choose Obelus</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Join the conversation revolution and make better purchasing
-              decisions.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Zap className="w-6 h-6" />,
-                title: "Instant Insights",
-                description: "Get immediate answers about any product",
-              },
-              {
-                icon: <Shield className="w-6 h-6" />,
-                title: "Authentic Reviews",
-                description: "Real experiences from verified users",
-              },
-              {
-                icon: <Users className="w-6 h-6" />,
-                title: "Community Driven",
-                description: "Learn from a growing community of reviewers",
-              },
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="text-blue-600 mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+              {/* Learn Card */}
+              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-100">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Search className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    Learn
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Get personalized product insights and recommendations
+                    through intelligent conversations.
+                  </p>
+                  <Link
+                    href="/sign-in?redirect=/dashboard"
+                    className="block w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium text-center"
+                  >
+                    Start Learning
+                  </Link>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-purple-600 text-white">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold mb-2">10K+</div>
-              <div className="text-purple-100">Reviews Shared</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">5K+</div>
-              <div className="text-purple-100">Active Users</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">1K+</div>
-              <div className="text-purple-100">Products Covered</div>
+            {/* Quick Access Section */}
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+                Quick Access
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <Link
+                  href="/sign-in?redirect=/dashboard"
+                  className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow border flex items-center gap-3"
+                >
+                  <History className="w-5 h-5 text-gray-600" />
+                  <div>
+                    <h4 className="font-medium text-gray-900">
+                      Conversation History
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      View your past conversations
+                    </p>
+                  </div>
+                </Link>
+                <Link
+                  href="/sign-in?redirect=/dashboard"
+                  className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow border flex items-center gap-3"
+                >
+                  <User className="w-5 h-5 text-gray-600" />
+                  <div>
+                    <h4 className="font-medium text-gray-900">
+                      Profile Settings
+                    </h4>
+                    <p className="text-sm text-gray-600">Manage your account</p>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </main>
+      </>
+    );
+  }
 
-      <Footer />
-    </div>
-  );
+  // If user is authenticated, redirect to dashboard
+  return redirect("/dashboard");
 }
